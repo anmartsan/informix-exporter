@@ -1,0 +1,82 @@
+version: '2'
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+networks:
+  front-tier:
+    driver: bridge
+  back-tier:
+    driver: bridge
+
+services:
+  prometheus:
+    restart: unless-stopped
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=15d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9091:9090
+ #   links:
+ #     - cadvisor:cadvisor
+ #     - alertmanager:alertmanager
+ #   depends_on:
+ #     - cadvisor
+    networks:
+      - back-tier
+#  grafana:
+#    restart: unless-stopped
+#    image: grafana/grafana
+#    depends_on:
+#      - prometheus
+#    ports:
+#      - 3001:3000
+#    volumes:
+#      - grafana_data:/var/lib/grafana
+#      - "/etc/timezone:/etc/timezone:ro"
+#      - "/etc/localtime:/etc/localtime:ro"
+#    env_file:
+#      - config.monitoring
+#    networks:
+#      - back-tier
+#      - front-tier
+#  ids_exporter:
+#    restart: unless-stopped
+#    image: anmartsan/informix-exporter
+#    depends_on:
+#      - prometheus
+#    ports:
+#      - 8087:8087
+#      - 8088:8088
+#    volumes:
+#      - ./exporter:/opt/exporter
+#      - "/etc/timezone:/etc/timezone:ro"
+#      - "/etc/localtime:/etc/localtime:ro"
+#    networks:
+#      - back-tier
+#  alertmanager:
+#    restart: unless-stopped
+#    image: prom/alertmanager
+#    ports:
+#      - 9093:9093
+#    volumes:
+#      - ./alertmanager/:/etc/alertmanager/
+#      - "/etc/timezone:/etc/timezone:ro"
+#      - "/etc/localtime:/etc/localtime:ro"
+#    networks:
+#      - back-tier
+#    command:
+#      - '--config.file=/etc/alertmanager/config.yml'
+#      - '--storage.path=/alertmanager'
+##

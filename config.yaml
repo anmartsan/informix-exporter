@@ -1,0 +1,11 @@
+metrics:
+- parametro: logs_without_backup
+  type: gauge
+  description: Number of logs without backup   
+  query: select count(*) as logssinbackup from syslogs where is_backed_up=0  
+  label: custom
+- parametro: pf_bufreads
+  type: gauge
+  description: Number of pf_bufreads   
+  query: select value  from sysshmhdr where name ="pf_bufreads"
+  label: custom

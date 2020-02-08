@@ -1,0 +1,6 @@
+{
+    "go.autocompleteUnimportedPackages": true,
+    "go.formatTool": "goimports",
+    "go.gopath":"/home/informix/exporter3/"
+
+}
